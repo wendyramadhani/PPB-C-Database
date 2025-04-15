@@ -160,7 +160,7 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
                 // Hitung selisih dan update balance
                 int difference = (updatedAmount - oldAmount).toInt();
                 setState(() {
-                  balance += difference;
+                  balance -= difference;
                 });
 
                 _titleController.clear();

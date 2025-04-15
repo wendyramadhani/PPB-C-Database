@@ -1,22 +1,103 @@
-# Expense-Tracker-PPB-C-
+Tentu! Berikut adalah README dalam format **Markdown** yang menjelaskan *programming step* dari kode aplikasi **Expense Tracker** yang kamu buat dengan Flutter dan SQLite:
 
-Expense Tracker untuk tugas PPB C
+---
 
-Link Video : https://youtu.be/0vdyF6YiS34
+# 📱 Expense Tracker App
 
-Referensi aplikasi : ide sendiri namun ada beberapa style yang mengambil dari ChatGPT
+Aplikasi **Expense Tracker** ini dibangun menggunakan Flutter dan `sqflite` untuk menyimpan dan mengelola data pengeluaran pengguna di dalam SQLite. Aplikasi ini mendukung login, pencatatan pengeluaran, penambahan saldo, serta fitur edit dan hapus pengeluaran.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 📌 Fitur Utama
 
-A few resources to get you started if this is your first Flutter project:
+- Menambahkan **saldo awal**
+- Menambahkan **pengeluaran**
+- Melihat **daftar pengeluaran**
+- Mengedit dan menghapus pengeluaran
+- Sinkronisasi dengan **user ID (uid)** yang login
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🛠️ Programming Steps
 
-# PPB-C-Database
+### 1. **Inisialisasi Aplikasi**
+- File dimulai dengan `ExpenseTrackerApp` yang menerima `uid` dari hasil login dan meneruskan ke halaman utama aplikasi.
+
+```dart
+home: ExpenseTracker(uid: uid),
+```
+
+---
+
+### 2. **Stateful Widget ExpenseTracker**
+- Komponen utama aplikasi, menangani tampilan dan logika pengeluaran.
+- Menyimpan data saldo (`balance`) dan daftar pengeluaran (`expenses`) di state.
+
+---
+
+### 3. **Mendapatkan dan Menampilkan Data**
+- `initState()` dipanggil pertama kali untuk:
+  - Mendapatkan data pengeluaran (`_fetchExpenses()`)
+  - Inisialisasi saldo (`initbalance()`)
+
+```dart
+void initState() {
+  super.initState();
+  _fetchExpenses();
+  initbalance();
+}
+```
+
+---
+
+### 4. **Menambah Saldo**
+- Field untuk memasukkan nilai saldo dan tombol "Add".
+- Fungsi `_setBalance()` meng-update saldo pengguna di database dan local state.
+
+```dart
+int newbalance = await _databaseService.updateUserBalance(balanceinp, widget.uid);
+```
+
+---
+
+### 5. **Menambah Pengeluaran**
+- Form input: judul dan jumlah pengeluaran.
+- Fungsi `_addExpense()` akan:
+  - Konversi jumlah ke bilangan negatif
+  - Tambahkan pengeluaran ke database
+  - Update saldo (karena berkurang)
+  - Refresh daftar pengeluaran
+
+---
+
+### 6. **Mengedit Pengeluaran**
+- `_editExpense(index)` menampilkan dialog popup untuk mengedit:
+  - Judul (`title`)
+  - Jumlah (`amount`)
+- Perbedaan jumlah akan dihitung dan saldo disesuaikan.
+
+```dart
+int difference = (updatedAmount - oldAmount).toInt();
+balance -= difference;
+```
+
+---
+
+### 7. **Menghapus Pengeluaran**
+- Fungsi `_deleteExpense(index)` akan:
+  - Menghapus entri dari database
+  - Menambahkan kembali jumlah yang dihapus ke saldo (karena jumlahnya negatif)
+
+```dart
+balance -= amount; // karena amount negatif, efeknya adalah saldo bertambah
+```
+
+---
+
+### 8. **Tampilan UI**
+- Desain UI menggunakan kombinasi `Card`, `TextField`, dan `ListView.builder`.
+- Tampilan responsif dan bersih, dengan setiap entri pengeluaran ditampilkan dalam kartu terpisah.
+- Fitur `edit` dan `delete` disediakan sebagai `IconButton` di tiap entri.
+
+---
+
