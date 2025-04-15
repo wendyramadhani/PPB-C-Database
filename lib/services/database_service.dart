@@ -90,8 +90,8 @@ class DatabaseService {
       final db = await database;
       int success = await db.insert(_expensetablename, {
         'uid': uid,
-        title: titleinp,
-        amount: examount,
+        'title': titleinp,
+        'amount': examount,
       });
 
       return true;
@@ -132,10 +132,10 @@ class DatabaseService {
     final db = await database;
     final List<Map<String, dynamic>> oldAmount = await db.query(
       _expensetablename,
-      columns: ['id', 'title', 'amount'],
       where: 'uid = ?',
       whereArgs: [uid],
     );
+    print('oldamountgetexpense = $oldAmount');
     return oldAmount;
   }
 
@@ -160,5 +160,32 @@ class DatabaseService {
   Future<void> deleteexpensebyid(int idexpense) async {
     final db = await database;
     await db.delete(_expensetablename, where: 'id = ?', whereArgs: [idexpense]);
+  }
+
+  Future<User?> getUserbalance(int uid) async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.query(
+      usertablename,
+      columns: ['$balanceamaount'],
+      where: 'id = ?',
+      whereArgs: [uid],
+    );
+
+    if (result.isNotEmpty) {
+      return User.fromMap(result.first);
+    } else {
+      return null;
+    }
+  }
+
+  // Fungsi untuk mengambil pengeluaran berdasarkan ID
+  Future<List<Map<String, dynamic>>> getExpense(int uid) async {
+    final db = await database;
+    final List<Map<String, dynamic>> result = await db.query(
+      _expensetablename,
+      where: 'uid = ?',
+      whereArgs: [uid],
+    );
+    return result;
   }
 }

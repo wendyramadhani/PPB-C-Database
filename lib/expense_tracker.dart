@@ -29,10 +29,12 @@ class ExpenseTracker extends StatefulWidget {
 }
 
 class _ExpenseTrackerState extends State<ExpenseTracker> {
-  @override
-  void initState() {
-    super.initState();
-    _showexpense();
+  Future<void> _fetchExpenses() async {
+    print('uid = ${widget.uid}');
+    final initexpenses = await _databaseService.getUserExpense(widget.uid);
+    setState(() {
+      expenses = initexpenses;
+    });
   }
 
   final DatabaseService _databaseService = DatabaseService.instance;
@@ -41,6 +43,20 @@ class _ExpenseTrackerState extends State<ExpenseTracker> {
   final TextEditingController _balanceController = TextEditingController();
   List<Map<String, dynamic>> expenses = [];
   int balance = 0;
+
+  void initbalance() async {
+    int initbalance = await _databaseService.updateUserBalance(0, widget.uid);
+    setState(() {
+      balance = initbalance;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchExpenses();
+    initbalance();
+  }
 
   void _setBalance(int balanceinp) async {
     if (_balanceController.text.isEmpty) return;
