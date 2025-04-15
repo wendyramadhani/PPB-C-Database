@@ -1,4 +1,3 @@
-Tentu! Berikut adalah README dalam format **Markdown** yang menjelaskan *programming step* dari kode aplikasi **Expense Tracker** yang kamu buat dengan Flutter dan SQLite:
 
 ---
 
